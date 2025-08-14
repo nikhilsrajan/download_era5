@@ -102,7 +102,7 @@ def download_mean_temperature(
     )
 
 
-def load_mean_temperature_nc_file(nc_filepath:str):
+def load_mean_temperature_nc_file(nc_filepath:str)->xr.DataArray:
     ncfile = xr.open_dataset(nc_filepath)
     t2m = ncfile['t2m']
     t2m = t2m - 273.15 # K to deg C

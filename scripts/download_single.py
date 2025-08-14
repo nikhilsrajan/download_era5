@@ -27,7 +27,7 @@ VAR_PREFIX = {
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        prog = 'python scripts/download.py',
+        prog = 'python scripts/download_single.py',
         description = (
             'Script to ERA5 data daily single values -- daily mean temperature, daily total precipitation'
         ),
