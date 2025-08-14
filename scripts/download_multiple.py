@@ -86,7 +86,11 @@ def get_download_filepath(
     var:str,
     date:datetime.datetime,
 ):
-    return os.path.join(folderpath, f"{VAR_PREFIX[var]}_{date.strftime('%Y-%m')}.nc")
+    return os.path.join(
+        folderpath, 
+        VAR_PREFIX[var], 
+        f"{VAR_PREFIX[var]}_{date.strftime('%Y-%m')}.nc",
+    )
 
 
 if __name__ == '__main__':
