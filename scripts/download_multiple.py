@@ -30,12 +30,13 @@ VAR_PREFIX = {
 
 
 def download(
-    var:str,
+    var : str,
     date : datetime.datetime,
     download_filepath : str,
     overwrite : bool = False,
-    url: str = None,
-    key: str = None,
+    url : str = None,
+    key : str = None,
+    exist_ok : bool = True,
     # request_full_month:bool = False,
 ):
     if var == VAR_PREC:
@@ -46,6 +47,7 @@ def download(
             url = url,
             key = key,
             request_full_month = True,
+            exist_ok = exist_ok,
         )
     elif var == VAR_TEMP:
         utils.download_mean_temperature(
@@ -55,6 +57,7 @@ def download(
             url = url,
             key = key,
             request_full_month = True,
+            exist_ok = exist_ok,
         )
     else:
         raise NotImplementedError(f'var = {var}')
@@ -141,14 +144,27 @@ if __name__ == '__main__':
             False, # overwrite
             URL,
             KEY,
+            True, # exist_ok
         )
         for var in args.var for date in dates
     ]
 
 
+    catalog_filepath = os.path.join(download_folderpath, 'catalog.csv')
+    if os.path.exists(catalog_filepath):
+        response = input("Warning: In the current implementation, the catalog.csv would be replaced. Do you still wish to continue? [Y/n]: ")
+        if response.lower() in ['yes', 'y']:
+            pass
+        elif response.lower() in ['n', 'n']:
+            print('Bonne journee ~')
+            exit(0)
+        else:
+            raise ValueError('Invalid response. Please reply either Y/n.')
+
+
     joblib.Parallel(n_jobs=N_JOBS, prefer="threads", verbose=10)(
-        joblib.delayed(download)(_var, _date, _filepath, _overwrite, _url, _key) 
-        for _var, _date, _filepath, _overwrite, _url, _key in jobs
+        joblib.delayed(download)(_var, _date, _filepath, _overwrite, _url, _key, _exist_ok) 
+        for _var, _date, _filepath, _overwrite, _url, _key, _exist_ok in jobs
     )
 
 
@@ -158,10 +174,12 @@ if __name__ == '__main__':
         'filepath': [],
     }
 
-    for var, date, filepath, _, _, _ in jobs:
+    for var, date, filepath, _, _, _, _ in jobs:
         data['var'].append(var)
         data['date'].append(date)
-        data['filepath'].append(filepath)
+        data['filepath'].append(os.path.abspath(filepath))
     
-    pd.DataFrame(data=data).to_csv(os.path.join(download_folderpath, 'catalog.csv'))
+    # To do : If I add more dates to download, append the catalog.csv rather than overrwrite it.
+
+    pd.DataFrame(data=data).to_csv(catalog_filepath, index=False)
     

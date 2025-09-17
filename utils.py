@@ -69,6 +69,7 @@ def download_total_precipitation(
     url: str = None,
     key: str = None,
     request_full_month:bool = False,
+    exist_ok : bool = False,
 ):
     download_data(
         variable = "total_precipitation",
@@ -79,6 +80,7 @@ def download_total_precipitation(
         url = url,
         key = key,
         request_full_month = request_full_month,
+        exist_ok = exist_ok,
     )
 
 
@@ -89,6 +91,7 @@ def download_mean_temperature(
     url: str = None,
     key: str = None,
     request_full_month:bool = False,
+    exist_ok : bool = False,
 ):
     download_data(
         variable = "2m_temperature",
@@ -99,6 +102,7 @@ def download_mean_temperature(
         url = url,
         key = key,
         request_full_month = request_full_month,
+        exist_ok = exist_ok,
     )
 
 
